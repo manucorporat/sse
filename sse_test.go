@@ -2,7 +2,6 @@ package sse
 
 import (
 	"bytes"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -143,6 +142,5 @@ func TestEncodeStream(t *testing.T) {
 		Event: "chat",
 		Data:  "hi! dude",
 	})
-	fmt.Println(w.String())
 	assert.Equal(t, w.String(), "event: float\ndata: 1.5\n\nid: 123\ndata: {\"bar\":\"foo\",\"foo\":\"bar\"}\n\nid: 124\nevent: chat\ndata: hi! dude\n\n")
 }

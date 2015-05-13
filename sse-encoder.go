@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const ContentType = "text/event-stream"
-
 // Server-Sent Events
 // W3C Working Draft 29 October 2009
 // http://www.w3.org/TR/2009/WD-eventsource-20091029/
+
+const ContentType = "text/event-stream"
 
 type Event struct {
 	Event string

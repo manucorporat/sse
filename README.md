@@ -1,5 +1,8 @@
 #Server-Sent Events
 
+[![GoDoc](https://godoc.org/github.com/manucorporat/sse?status.svg)](https://godoc.org/github.com/manucorporat/sse)
+[![Build Status](https://travis-ci.org/manucorporat/sse.svg)](https://travis-ci.org/manucorporat/sse)
+
 Server-sent events (SSE) is a technology where a browser receives automatic updates from a server via HTTP connection. The Server-Sent Events EventSource API is standardized as part of HTML5[1] by the W3C.
 
 [Read this great SSE introduction by the HTML5Rocks guys](http://www.html5rocks.com/en/tutorials/eventsource/basics/)
