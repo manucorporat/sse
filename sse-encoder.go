@@ -8,6 +8,10 @@ import (
 	"strings"
 )
 
+// Server-Sent Events
+// W3C Working Draft 29 October 2009
+// http://www.w3.org/TR/2009/WD-eventsource-20091029/
+
 type Event struct {
 	Event string
 	Id    string
@@ -70,6 +74,8 @@ func typeOfData(data interface{}) reflect.Kind {
 }
 
 func escape(str string) string {
+	// any-char		= %x0000-0009 / %x000B-000C / %x000E-10FFFF
+	// 				; a Unicode character other than U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR)
 	str = strings.Replace(str, "\n", "\\n", -1)
 	str = strings.Replace(str, "\r", "\\r", -1)
 	return str
