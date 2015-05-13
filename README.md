@@ -48,3 +48,7 @@ fmt.Println(sse.ContentType)
 ```
 text/event-stream
 ```
+
+##Decoding support
+
+There is a client-side implementation of SSE coming soon.
