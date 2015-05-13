@@ -6,6 +6,8 @@ Server-sent events (SSE) is a technology where a browser receives automatic upda
 
 [Real world demostration using Gin](http://sse.getgin.io/)
 
+##Sample code
+
 ```go
 import "github.com/manucorporat/sse"
 
@@ -38,3 +40,11 @@ data: {"content":"hi!","date":1431540810,"user":"manu"}
  
 ```
 
+##Content-Type
+
+```go
+fmt.Println(sse.ContentType)
+```
+```
+text/event-stream
+```
