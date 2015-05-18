@@ -22,16 +22,6 @@ type Event struct {
 	Data  interface{}
 }
 
-func (r Event) Write(w http.ResponseWriter) error {
-	header := w.Header()
-	header.Set("Content-Type", ContentType)
-
-	if _, exist := header["Cache-Control"]; !exist {
-		header.Set("Cache-Control", "no-cache")
-	}
-	return Encode(w, r)
-}
-
 func Encode(w io.Writer, event Event) error {
 	writeId(w, event.Id)
 	writeEvent(w, event.Event)
@@ -72,9 +62,20 @@ func writeData(w io.Writer, data interface{}) error {
 		w.Write([]byte("\n"))
 	default:
 		text := fmt.Sprint(data)
-		fmt.Fprint(w, escape(text), "\n\n")
+		w.Write([]byte(escape(text)))
+		w.Write([]byte("\n\n"))
 	}
 	return nil
+}
+
+func (r Event) Write(w http.ResponseWriter) error {
+	header := w.Header()
+	header.Set("Content-Type", ContentType)
+
+	if _, exist := header["Cache-Control"]; !exist {
+		header.Set("Cache-Control", "no-cache")
+	}
+	return Encode(w, r)
 }
 
 func typeOfData(data interface{}) reflect.Kind {
@@ -88,7 +89,7 @@ func typeOfData(data interface{}) reflect.Kind {
 
 func escape(str string) string {
 	// any-char		= %x0000-0009 / %x000B-000C / %x000E-10FFFF
-	// 				; a Unicode character other than U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR)
+	// ; a Unicode character other than U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR)
 	str = strings.Replace(str, "\n", "\\n", -1)
 	str = strings.Replace(str, "\r", "\\r", -1)
 	return str
