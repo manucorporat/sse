@@ -2,6 +2,7 @@ package sse
 
 import (
 	"bytes"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -143,4 +144,18 @@ func TestEncodeStream(t *testing.T) {
 		Data:  "hi! dude",
 	})
 	assert.Equal(t, w.String(), "event: float\ndata: 1.5\n\nid: 123\ndata: {\"bar\":\"foo\",\"foo\":\"bar\"}\n\nid: 124\nevent: chat\ndata: hi! dude\n\n")
+}
+
+func TestRenderSSE(t *testing.T) {
+	w := httptest.NewRecorder()
+
+	err := (Event{
+		Event: "msg",
+		Data:  "hi! how are you?",
+	}).Write(w)
+
+	assert.NoError(t, err)
+	assert.Equal(t, w.Body.String(), "event: msg\ndata: hi! how are you?\n\n")
+	assert.Equal(t, w.Header().Get("Content-Type"), "text/event-stream")
+	assert.Equal(t, w.Header().Get("Cache-Control"), "no-cache")
 }

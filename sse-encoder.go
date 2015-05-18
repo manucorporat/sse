@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/http"
 	"reflect"
 	"strings"
 )
@@ -19,6 +20,16 @@ type Event struct {
 	Id    string
 	Retry uint
 	Data  interface{}
+}
+
+func (r Event) Write(w http.ResponseWriter) error {
+	header := w.Header()
+	header.Set("Content-Type", ContentType)
+
+	if _, exist := header["Cache-Control"]; !exist {
+		header.Set("Cache-Control", "no-cache")
+	}
+	return Encode(w, r)
 }
 
 func Encode(w io.Writer, event Event) error {
