@@ -163,3 +163,54 @@ func TestRenderSSE(t *testing.T) {
 	assert.Equal(t, w.Header().Get("Content-Type"), "text/event-stream")
 	assert.Equal(t, w.Header().Get("Cache-Control"), "no-cache")
 }
+
+func BenchmarkResponseWriter(b *testing.B) {
+	w := httptest.NewRecorder()
+	b.ResetTimer()
+	b.ReportAllocs()
+	for i := 0; i < b.N; i++ {
+		(Event{
+			Event: "new_message",
+			Data:  "hi! how are you? I am fine. this is a long stupid message!!!",
+		}).Write(w)
+	}
+}
+
+func BenchmarkFullSSE(b *testing.B) {
+	buf := new(bytes.Buffer)
+	b.ResetTimer()
+	b.ReportAllocs()
+	for i := 0; i < b.N; i++ {
+		Encode(buf, Event{
+			Event: "new_message",
+			Id:    "13435",
+			Retry: 10,
+			Data:  "hi! how are you? I am fine. this is a long stupid message!!!",
+		})
+	}
+}
+
+func BenchmarkNoRetrySSE(b *testing.B) {
+	buf := new(bytes.Buffer)
+	b.ResetTimer()
+	b.ReportAllocs()
+	for i := 0; i < b.N; i++ {
+		Encode(buf, Event{
+			Event: "new_message",
+			Id:    "13435",
+			Data:  "hi! how are you? I am fine. this is a long stupid message!!!",
+		})
+	}
+}
+
+func BenchmarkSimpleSSE(b *testing.B) {
+	buf := new(bytes.Buffer)
+	b.ResetTimer()
+	b.ReportAllocs()
+	for i := 0; i < b.N; i++ {
+		Encode(buf, Event{
+			Event: "new_message",
+			Data:  "hi! how are you? I am fine. this is a long stupid message!!!",
+		})
+	}
+}
