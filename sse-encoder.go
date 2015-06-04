@@ -22,6 +22,7 @@ const ContentType = "text/event-stream"
 
 var contentType = []string{ContentType}
 var noCache = []string{"no-cache"}
+var replacer = strings.NewReplacer("\n", "\\n", "\r", "\\r")
 
 type Event struct {
 	Event string
@@ -41,7 +42,7 @@ func Encode(writer io.Writer, event Event) error {
 func writeId(w stringWriter, id string) {
 	if len(id) > 0 {
 		w.WriteString("id: ")
-		w.WriteString(escape(id))
+		writeEscape(w, id)
 		w.WriteString("\n")
 	}
 }
@@ -49,7 +50,7 @@ func writeId(w stringWriter, id string) {
 func writeEvent(w stringWriter, event string) {
 	if len(event) > 0 {
 		w.WriteString("event: ")
-		w.WriteString(escape(event))
+		writeEscape(w, event)
 		w.WriteString("\n")
 	}
 }
@@ -73,7 +74,7 @@ func writeData(w stringWriter, data interface{}) error {
 		w.WriteString("\n")
 	default:
 		text := fmt.Sprint(data)
-		w.WriteString(escape(text))
+		writeEscape(w, text)
 		w.WriteString("\n\n")
 	}
 	return nil
@@ -98,10 +99,8 @@ func kindOfData(data interface{}) reflect.Kind {
 	return valueType
 }
 
-func escape(str string) string {
+func writeEscape(w stringWriter, str string) {
 	// any-char		= %x0000-0009 / %x000B-000C / %x000E-10FFFF
 	// ; a Unicode character other than U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR)
-	str = strings.Replace(str, "\n", "\\n", -1)
-	str = strings.Replace(str, "\r", "\\r", -1)
-	return str
+	replacer.WriteString(w, str)
 }
