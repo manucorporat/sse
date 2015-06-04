@@ -80,7 +80,7 @@ func writeData(w stringWriter, data interface{}) error {
 	return nil
 }
 
-func (r Event) Write(w http.ResponseWriter) error {
+func (r Event) Render(w http.ResponseWriter) error {
 	header := w.Header()
 	header["Content-Type"] = contentType
 

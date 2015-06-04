@@ -156,7 +156,7 @@ func TestRenderSSE(t *testing.T) {
 	err := (Event{
 		Event: "msg",
 		Data:  "hi! how are you?",
-	}).Write(w)
+	}).Render(w)
 
 	assert.NoError(t, err)
 	assert.Equal(t, w.Body.String(), "event: msg\ndata: hi! how are you?\n\n")
@@ -172,7 +172,7 @@ func BenchmarkResponseWriter(b *testing.B) {
 		(Event{
 			Event: "new_message",
 			Data:  "hi! how are you? I am fine. this is a long stupid message!!!",
-		}).Write(w)
+		}).Render(w)
 	}
 }
 
@@ -187,6 +187,7 @@ func BenchmarkFullSSE(b *testing.B) {
 			Retry: 10,
 			Data:  "hi! how are you? I am fine. this is a long stupid message!!!",
 		})
+		buf.Reset()
 	}
 }
 
@@ -200,6 +201,7 @@ func BenchmarkNoRetrySSE(b *testing.B) {
 			Id:    "13435",
 			Data:  "hi! how are you? I am fine. this is a long stupid message!!!",
 		})
+		buf.Reset()
 	}
 }
 
@@ -212,5 +214,6 @@ func BenchmarkSimpleSSE(b *testing.B) {
 			Event: "new_message",
 			Data:  "hi! how are you? I am fine. this is a long stupid message!!!",
 		})
+		buf.Reset()
 	}
 }
